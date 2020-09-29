@@ -1,0 +1,8 @@
+_LOCAL=${HOME}/.local
+_LOCAL_BIN=${_LOCAL}/bin
+_LOCAL_LIB=${_LOCAL}/lib
+_LOCAL_SHARE=${_LOCAL}/share
+
+PYENV_ROOT=${_LOCAL_SHARE}/pyenv
+GOENV_ROOT=${_LOCAL_SHARE}/goenv
+
