@@ -1,29 +1,28 @@
-#!/bin/sh
+#!/bin/bash
+set -ueo pipefail
 
-source $(dirname $0)/../configs/default.sh
+BASE="$( cd "$(dirname "$0")"/.. >/dev/null 2>&1 ; pwd -P )"
+SDIR="${BASE}/scripts"
+FDIR="${BASE}/scripts/functions"
+export BASE SDIR FDIR
 
-CURL=$(which curl)
-if ! [ -x ${CURL} ]; then echo "curl not installed"; exit 1; fi
+# shellcheck source=../configs/default.sh
+source "${BASE}/configs/default.sh"
+# shellcheck source=../scripts/functions/setup.sh
+source "${FDIR}/setup.sh"
 
-GIT=$(which git)
-if ! [ -x ${GIT} ]; then echo "git not installed"; exit 1; fi
+DIRS=(
+"${_LOCAL}"
+"${_LOCAL_BIN}"
+"${_LOCAL_INCLUDE}"
+"${_LOCAL_LIB}"
+"${_LOCAL_SHARE}"
+"${TMP}"
+"${PYENV_ROOT}"
+"${GOENV_ROOT}")
 
-# Install `antigen`
-${CURL} -L git.io/antigen > ${_LOCAL_LIB}/antigen.zsh
+for I in "${DIRS[@]}"; do
+  mkdir -p "${I}"
+done
 
-# Install `goenv`
-GOENV_DIR=${_LOCAL_SHARE}/goenv
-if ! [ -d ${GOENV_DIR} ]; then
-  git clone https://github.com/syndbg/goenv.git ${GOENV_DIR}
-else
-  echo "${GOENV_DIR} already exists, skipping..."
-fi
-
-# Install `pyenv`
-PYENV_DIR=${_LOCAL_SHARE}/pyenv
-if ! [ -d ${PYENV_DIR} ]; then
-  git clone https://github.com/pyenv/pyenv.git ${PYENV_DIR}
-else
-  echo "${PYENV_DIR} already exists, skipping..."
-fi
-
+"${SDIR}"/install_programs.sh
